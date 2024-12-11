@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerFeet = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
+        
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     // Update is called once per frame
@@ -76,19 +78,14 @@ public class PlayerController : MonoBehaviour
                 isIdle = true;
             }
 
-            //如果按下shift，则可以奔跑
-            if (Input.GetKey(keyRun)) 
-            {
-                rb.velocity = new Vector2(horizontalMove * runningSpeed, rb.velocity.y);
-            }else if (!Input.GetKey(keyRun))//如果没按下奔跑
-            {
-                rb.velocity = new Vector2(horizontalMove * speed, rb.velocity.y);
-            }      
+            float targetSpeed = Input.GetKey(keyRun) ? runningSpeed : speed;
+            
+            float moveForce = horizontalMove * targetSpeed;
+            rb.velocity = new Vector2(moveForce, rb.velocity.y);
 
             if(horizontalMove != 0)
             {
                 transform.localScale = new Vector3(horizontalMove, 1, 1);
-                //transform.position = new Vector3(horizontalMove, 1, 1);
             }
         }
     }
